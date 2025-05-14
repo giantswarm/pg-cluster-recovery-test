@@ -15,6 +15,6 @@ home: https://github.com/giantswarm/pg-cluster-recovery-test
 
 sources:
 - https://github.com/some-org/some-repo
-version: 0.0.0-dev # [[ .Version ]] if you're using architect instead of app-build-suite
+version: 0.0.0-dev
 annotations:
-  application.giantswarm.io/team: TEAM-NAME # used through .Chart.Annotations.team (not replaced automatically)
+  application.giantswarm.io/team: atlas
