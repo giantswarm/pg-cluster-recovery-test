@@ -1,0 +1,53 @@
+{{- if .Values.pgCluster.deploy }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  labels:
+    {{ include "labels.common" . | nindent 4 }}
+  name: {{ .Values.pgCluster.name }}
+  namespace: {{ .Values.pgCluster.namespace }}
+spec:
+  instances: 2
+  imageName: {{ .Values.registry }}/{{ .Values.pgCluster.image.name }}:{{ .Values.pgCluster.image.tag }}
+  postgresql:
+    parameters:
+      # Maximum size of the WAL
+      max_wal_size: '512MB'
+      # Specifies the minimum size of past WAL files kept in the pg_wal directory
+      wal_keep_size: '128MB'
+      # Specify the maximum size of WAL files that replication slot
+      max_slot_wal_keep_size: '128MB'
+  storage:
+    size: {{ .Values.pgCluster.storageSize }}
+  bootstrap:
+    recovery:
+      source: {{ .Values.pgCluster.backupCluster.name }}
+  externalClusters:
+  - name: {{ .Values.pgCluster.backupCluster.name }}
+    barmanObjectStore:
+      {{- if (eq .Values.provider "capa") }}
+      destinationPath: {{ .Values.pgCluster.backupCluster.destinationPath }}
+      s3Credentials:
+        inheritFromIAMRole: true
+      {{- end }}
+      {{- if or (eq .Values.provider "capz") (and (eq .customer "giantswarm") (or (eq .Values.provider "vsphere") (eq .Values.provider "cloud-director"))) }}
+      destinationPath: {{ .Values.pgCluster.backupCluster.destinationPath }}
+      azureCredentials:
+        storageAccount:
+          name: {{ Values.pgCluster.backupCluster.azureSecret.secretName }}
+          key: {{ Values.pgCluster.backupCluster.azureSecret.name }}
+        storageKey:
+          name: {{ Values.pgCluster.backupCluster.azureSecret.name }}
+          key: {{ Values.pgCluster.backupCluster.azureSecret.key }}
+      {{- end }}
+      wal:
+        maxParallel: 8
+  {{- end }}
+  {{- if (eq .Values.provider "capa") }}
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        {{ toYaml .Values.pgCluster.serviceAccount.annotations | nindent 8}}
+        eks.amazonaws.com/role-arn: {{ }}
+  {{- end }}
+{{- end }}

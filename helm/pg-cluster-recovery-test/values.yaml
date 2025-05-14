@@ -1,12 +1,60 @@
-# This file is a Helm values file for the pg-cluster-recovery-test chart.
-#
-# To learn more about how to configure your app on your cluster
-# and override the default values in here, visit:
-#
-#   https://docs.giantswarm.io/tutorials/fleet-management/app-platform/app-configuration/#basic-values-merging-example
-#
-image:
-  name: "giantswarm/pg-cluster-recovery-test"
-  tag: ""
-registry:
-  domain: gsoci.azurecr.io
+global:
+  registry: gsoci.azurecr.io
+  provider: capa
+  customer: ""
+
+cronjob:
+  name: ""
+  namespace: ""
+
+  image:
+    name: giantswarm/kubectl
+    tag: 1.31.1
+
+  schedule: "0 0 * * *"
+  backoffLimit: 3
+
+  serviceAccount:
+    name: ""
+
+  resources: {}
+
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    privileged: false
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+
+  podSecurityContext:
+    fsGroup: 1000
+    runAsUser: 1000
+
+pgCluster:
+  deploy: false
+
+  name: ""
+  namespace: ""
+
+  storageSize: 2Gi
+
+  image:
+    name: giantswarm/postgresql-cnpg
+    tag: 16.8
+
+  backupCluster:
+    name: ""
+    destinationPath: ""
+    # Only for pg clusters running on clusters with Azure object storage
+    azureSecret:
+      secretName: ""
+      name: accountName
+      key: accountKey
+
+  serviceAccount:
+    annotations: {}
+  
