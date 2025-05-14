@@ -51,7 +51,7 @@
                             "type": "string"
                         },
                         "tag": {
-                            "type": "number"
+                            "type": "string"
                         }
                     }
                 },
@@ -81,6 +81,9 @@
                 "serviceAccount": {
                     "type": "object",
                     "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
                         "name": {
                             "type": "string"
                         }
@@ -102,31 +105,59 @@
                 }
             }
         },
-        "pgCluster": {
+        "pgClusters": {
             "type": "object",
             "properties": {
-                "backupCluster": {
-                    "type": "object",
-                    "properties": {
-                        "azureSecret": {
-                            "type": "object",
-                            "properties": {
-                                "key": {
-                                    "type": "string"
-                                },
-                                "name": {
-                                    "type": "string"
-                                },
-                                "secretName": {
-                                    "type": "string"
+                "clusters": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "backupCluster": {
+                                "type": "object",
+                                "properties": {
+                                    "azureSecret": {
+                                        "type": "object",
+                                        "properties": {
+                                            "key": {
+                                                "type": "string"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "secretName": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "destinationPath": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    }
                                 }
+                            },
+                            "instances": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "namespace": {
+                                "type": "string"
+                            },
+                            "serviceAccount": {
+                                "type": "object",
+                                "properties": {
+                                    "annotations": {
+                                        "type": "object"
+                                    }
+                                }
+                            },
+                            "storageSize": {
+                                "type": "string"
                             }
-                        },
-                        "destinationPath": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
                         }
                     }
                 },
@@ -143,23 +174,6 @@
                             "type": "number"
                         }
                     }
-                },
-                "name": {
-                    "type": "string"
-                },
-                "namespace": {
-                    "type": "string"
-                },
-                "serviceAccount": {
-                    "type": "object",
-                    "properties": {
-                        "annotations": {
-                            "type": "object"
-                        }
-                    }
-                },
-                "storageSize": {
-                    "type": "string"
                 }
             }
         }

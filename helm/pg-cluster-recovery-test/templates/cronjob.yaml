@@ -20,8 +20,8 @@ spec:
           containers:
           - command:
             - TODO
-            image: {{ .Values.registry }}/{{ .Values.cronjob.image.name }}:{{ .Values.pgCluster.image.tag }}
-            imagePullPolicy: IfNotPresent
+            image: "{{ .Values.registry }}/{{ .Values.cronjob.image.name }}:{{ .Values.pgCluster.image.tag }}"
+            imagePullPolicy: IfNotPresent"
             name: {{ .Values.cronjob.name }}
             resources:
               {{- toYaml .Values.cronjob.resources | nindent 14 }}
@@ -32,7 +32,6 @@ spec:
           schedulerName: default-scheduler
           securityContext:
             {{- toYaml .Values.cronjob.podSecurityContext | nindent 12 }}
-          serviceAccount: {{ .Values.cronjob.serviceAccount.name }}
           serviceAccountName: {{ .Values.cronjob.serviceAccount.name }}
   terminationGracePeriodSeconds: 30
   schedule: {{ }}
