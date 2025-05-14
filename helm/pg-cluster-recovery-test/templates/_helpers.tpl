@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "name" -}}
+{{- define "pg-cluster-recovery-test.name" -}}
 {{- .Chart.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
