@@ -9,18 +9,18 @@ spec:
   jobTemplate:
     metadata:
       labels:
-        {{ include "labels.common" . | nindent 4 }}
+        {{ include "labels.common" . | nindent 8 }}
     spec:
       backoffLimit: {{ .Values.cronjob.backoffLimit }}
       template:
         metadata:
           labels:
-            {{ include "labels.common" . | nindent 4 }}
+            {{ include "labels.common" . | nindent 12 }}
         spec:
           containers:
           - command:
             - TODO
-            image: "{{ .Values.registry }}/{{ .Values.cronjob.image.name }}:{{ .Values.pgCluster.image.tag }}"
+            image: "{{ .Values.registry }}/{{ .Values.cronjob.image.name }}:{{ .Values.cronjob.image.tag }}"
             imagePullPolicy: IfNotPresent"
             name: {{ .Values.cronjob.name }}
             resources:
@@ -34,4 +34,4 @@ spec:
             {{- toYaml .Values.cronjob.podSecurityContext | nindent 12 }}
           serviceAccountName: {{ .Values.cronjob.serviceAccount.name }}
   terminationGracePeriodSeconds: 30
-  schedule: {{ }}
+  schedule: {{ .Values.cronjob.schedule }}

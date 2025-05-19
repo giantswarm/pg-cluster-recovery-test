@@ -17,7 +17,7 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "labels.common" -}}
-app: {{ include "name" . | quote }}
+app: {{ include "pg-cluster-recovery-test.name" . | quote }}
 {{ include "labels.selector" . }}
 app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -29,6 +29,6 @@ helm.sh/chart: {{ include "chart" . | quote }}
 Selector labels
 */}}
 {{- define "labels.selector" -}}
-app.kubernetes.io/name: {{ include "name" . | quote }}
+app.kubernetes.io/name: {{ include "pg-cluster-recovery-test.name" . | quote }}
 app.kubernetes.io/instance: {{ .Release.Name | quote }}
 {{- end -}}

@@ -4,7 +4,7 @@ global:
   customer: ""
 
 cronjob:
-  name: ""
+  name: pg-cluster-recovery-test
   namespace: ""
 
   image:
@@ -16,7 +16,7 @@ cronjob:
 
   serviceAccount:
     create: true
-    name: ""
+    name: pg-cluster-recovery-test
 
   resources: {}
 
