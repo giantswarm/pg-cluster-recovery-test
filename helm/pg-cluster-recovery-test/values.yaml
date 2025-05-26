@@ -4,14 +4,10 @@ global:
   customer: ""
 
 cronjob:
-  name: pg-cluster-recovery-test
-  namespace: ""
-
   image:
     name: giantswarm/kubectl
     tag: 1.31.1
-
-  schedule: "0 10 * * *" # Every day at 10:00 UTC
+  
   backoffLimit: 3
 
   serviceAccount:
@@ -36,8 +32,6 @@ cronjob:
     runAsUser: 1000
 
 pgClusters:
-  deploy: false
-
   image:
     name: giantswarm/postgresql-cnpg
     tag: 16.8
@@ -49,6 +43,8 @@ pgClusters:
 
     storageSize: 2Gi
     instances: 1
+
+    schedule: "0 10 * * *" # Every day at 10:00 UTC
 
     backupCluster:
       name: ""
