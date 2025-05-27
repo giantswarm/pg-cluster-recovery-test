@@ -60,7 +60,7 @@ data:
             {{ toYaml $cluster.serviceAccount.annotations | nindent 8}}
       {{- end }}
   test-script.sh: |
-    #!/sh
+    #!/bin/sh
 
     # create the recovery test cluster
     kubectl apply -f /etc/config/pg-recovery-cluster.yaml
