@@ -23,7 +23,7 @@ spec:
         spec:
           containers:
           - command:
-            - ./etc/config/test-script.sh
+            - /etc/config/test-script.sh
             image: "{{ $global.registry }}/{{ $global.cronjob.image.name }}:{{ $global.cronjob.image.tag }}"
             imagePullPolicy: IfNotPresent"
             name: {{ $global.cronjob.name }}
