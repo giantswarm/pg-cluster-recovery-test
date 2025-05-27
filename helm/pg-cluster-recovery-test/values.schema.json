@@ -55,12 +55,6 @@
                         }
                     }
                 },
-                "name": {
-                    "type": "string"
-                },
-                "namespace": {
-                    "type": "string"
-                },
                 "podSecurityContext": {
                     "type": "object",
                     "properties": {
@@ -74,9 +68,6 @@
                 },
                 "resources": {
                     "type": "object"
-                },
-                "schedule": {
-                    "type": "string"
                 },
                 "serviceAccount": {
                     "type": "object",
@@ -147,6 +138,9 @@
                             "namespace": {
                                 "type": "string"
                             },
+                            "schedule": {
+                                "type": "string"
+                            },
                             "serviceAccount": {
                                 "type": "object",
                                 "properties": {
@@ -157,12 +151,12 @@
                             },
                             "storageSize": {
                                 "type": "string"
+                            },
+                            "testTimeout": {
+                                "type": "integer"
                             }
                         }
                     }
-                },
-                "deploy": {
-                    "type": "boolean"
                 },
                 "image": {
                     "type": "object",

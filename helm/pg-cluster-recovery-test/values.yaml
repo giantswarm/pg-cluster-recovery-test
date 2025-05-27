@@ -44,7 +44,9 @@ pgClusters:
     storageSize: 2Gi
     instances: 1
 
+    # cronjob related config
     schedule: "0 10 * * *" # Every day at 10:00 UTC
+    testTimeout: 1800 # 30 minutes
 
     backupCluster:
       name: ""
