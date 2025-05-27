@@ -62,6 +62,13 @@ data:
   test-script.sh: |
     #!/bin/sh
 
+    # Make sure that a posgresql cluster with the same name is not already running
+    if kubectl get cluster.postgresql.cnpg.io {{ $cluster.name }} -n {{ $cluster.namespace }}; then
+      echo "A cluster with the name {{ $cluster.name }} already exists in namespace {{ $cluster.namespace }}. Please delete it before running the recovery test."
+      
+      exit 1
+    fi
+    
     # create the recovery test cluster
     kubectl apply -f /etc/config/pg-recovery-cluster.yaml
 
@@ -70,14 +77,21 @@ data:
 
     echo "Running recovery test for cluster {{ $cluster.name }}"
 
+    # Execute tests until either those are successful or the timeout is reached
     while [ $SECONDS -lt $TEST_TIMEOUT ]; do
       # Check if the cluster is ready
       if [[ "${kubectl get clusters.postgresql.cnpg.io -n {{ $cluster.namespace }} {{ $cluster.name }} -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'}" == "True"]]; then
         echo "{{ $cluster.name }} successfully entered the 'Ready' state"
 
+        # If the postgresql cluster is ready, check if all the generated pods are in 'Ready' state
         if [[ "${kubectl get pods -n {{ $cluster.namespace }} -l cnpg.io/cluster={{ $cluster.name }} -o jsonpath='{.items[*].status.conditions[?(@.type=="Ready")].status}' | grep True | wc -w}" -eq $cluster.instances ]]; then
           echo "All pods for cluster {{ $cluster.name }} are in 'Ready' state. Recovery test successful."
-          break
+          echo "Deleteting the recovery test cluster {{ $cluster.name }}"
+
+          # If the postgresql cluster's pods are ready, delete the cluster and end the test
+          kubectl delete cluster.postgresql.cnpg.io {{ $cluster.name }} -n {{ $cluster.namespace }}
+
+          exit 0
         fi
       fi
       
@@ -85,5 +99,6 @@ data:
       sleep 300
     done
 
-    echo "Recovery test completed successfully for cluster {{ $cluster.name }}"
+    # If the timeout is reached, end the test without deleting the cluster to allow further investigation
+    echo "Recovery test completed"
 {{- end }}
