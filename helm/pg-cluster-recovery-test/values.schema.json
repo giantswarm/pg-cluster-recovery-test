@@ -69,6 +69,9 @@
                 "resources": {
                     "type": "object"
                 },
+                "schedule": {
+                    "type": "string"
+                },
                 "serviceAccount": {
                     "type": "object",
                     "properties": {
@@ -79,6 +82,9 @@
                             "type": "string"
                         }
                     }
+                },
+                "testTimeout": {
+                    "type": "integer"
                 }
             }
         },
@@ -96,65 +102,31 @@
                 }
             }
         },
-        "pgClusters": {
+        "pgCluster": {
             "type": "object",
             "properties": {
-                "clusters": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "backupCluster": {
-                                "type": "object",
-                                "properties": {
-                                    "azureSecret": {
-                                        "type": "object",
-                                        "properties": {
-                                            "key": {
-                                                "type": "string"
-                                            },
-                                            "name": {
-                                                "type": "string"
-                                            },
-                                            "secretName": {
-                                                "type": "string"
-                                            }
-                                        }
-                                    },
-                                    "destinationPath": {
-                                        "type": "string"
-                                    },
-                                    "name": {
-                                        "type": "string"
-                                    }
+                "backupCluster": {
+                    "type": "object",
+                    "properties": {
+                        "azureSecret": {
+                            "type": "object",
+                            "properties": {
+                                "key": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "secretName": {
+                                    "type": "string"
                                 }
-                            },
-                            "instances": {
-                                "type": "integer"
-                            },
-                            "name": {
-                                "type": "string"
-                            },
-                            "namespace": {
-                                "type": "string"
-                            },
-                            "schedule": {
-                                "type": "string"
-                            },
-                            "serviceAccount": {
-                                "type": "object",
-                                "properties": {
-                                    "annotations": {
-                                        "type": "object"
-                                    }
-                                }
-                            },
-                            "storageSize": {
-                                "type": "string"
-                            },
-                            "testTimeout": {
-                                "type": "integer"
                             }
+                        },
+                        "destinationPath": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
                         }
                     }
                 },
@@ -168,6 +140,26 @@
                             "type": "number"
                         }
                     }
+                },
+                "instances": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "namespace": {
+                    "type": "string"
+                },
+                "serviceAccount": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "storageSize": {
+                    "type": "string"
                 }
             }
         }

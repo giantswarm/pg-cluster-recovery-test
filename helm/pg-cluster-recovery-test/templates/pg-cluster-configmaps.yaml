@@ -1,12 +1,8 @@
-{{- $global := .Values }}
-{{- range $cluster := .Values.pgClusters.clusters }}
-{{- with $global }}
----
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $cluster.name }}
-  namespace: {{ $cluster.namespace }}
+  name: {{ .Values.pgCluster.name }}
+  namespace: {{ .Values.pgCluster.namespace }}
 data:
   pg-recovery-cluster.yaml: |
     apiVersion: postgresql.cnpg.io/v1
@@ -14,11 +10,11 @@ data:
     metadata:
       labels:
         {{ tpl (include "labels.common" $) . | nindent 8 }}
-      name: {{ $cluster.name }}
-      namespace: {{ $cluster.namespace }}
+      name: {{ .Values.pgCluster.name }}
+      namespace: {{ .Values.pgCluster.namespace }}
     spec:
-      instances: {{ $cluster.instances }}
-      imageName: {{ $global.registry }}/{{ $global.pgClusters.image.name }}:{{ $global.pgClusters.image.tag }}
+      instances: {{ .Values.pgCluster.instances }}
+      imageName: {{ .Values.global.registry }}/{{ .Values.pgCluster.image.name }}:{{ .Values.pgCluster.image.tag }}
       postgresql:
         parameters:
           # Maximum size of the WAL
@@ -28,43 +24,42 @@ data:
           # Specify the maximum size of WAL files that replication slot
           max_slot_wal_keep_size: '128MB'
       storage:
-        size: {{ $cluster.storageSize }}
+        size: {{ .Values.pgCluster.storageSize }}
       bootstrap:
         recovery:
-          source: {{ $cluster.backupCluster.name }}
+          source: {{ .Values.pgCluster.backupCluster.name }}
       externalClusters:
-      - name: {{ $cluster.backupCluster.name }}
+      - name: {{ .Values.pgCluster.backupCluster.name }}
         barmanObjectStore:
-          {{- if (eq $global.provider "capa") }}
-          destinationPath: {{ $cluster.backupCluster.destinationPath }}
+          {{- if (eq .Values.global.provider "capa") }}
+          destinationPath: {{ .Values.pgCluster.backupCluster.destinationPath }}
           s3Credentials:
             inheritFromIAMRole: true
           {{- end }}
-          {{- if or (eq $global.provider "capz") (and (eq .customer "giantswarm") (or (eq $global.provider "vsphere") (eq $global.provider "cloud-director"))) }}
-          destinationPath: {{ $cluster.backupCluster.destinationPath }}
+          {{- if or (eq .Values.global.provider "capz") (and (eq .Values.global.customer "giantswarm") (or (eq .Values.global.provider "vsphere") (eq .Values.global.provider "cloud-director"))) }}
+          destinationPath: {{ .Values.pgCluster.backupCluster.destinationPath }}
           azureCredentials:
             storageAccount:
-              name: {{ $cluster.backupCluster.azureSecret.secretName }}
-              key: {{ $cluster.backupCluster.azureSecret.name }}
+              name: {{ .Values.pgCluster.backupCluster.azureSecret.secretName }}
+              key: {{ .Values.pgCluster.backupCluster.azureSecret.name }}
             storageKey:
-              name: {{ $cluster.backupCluster.azureSecret.name }}
-              key: {{ $cluster.backupCluster.azureSecret.key }}
+              name: {{ .Values.pgCluster.backupCluster.azureSecret.name }}
+              key: {{ .Values.pgCluster.backupCluster.azureSecret.key }}
           {{- end }}
           wal:
             maxParallel: 8
-      {{- end }}
-      {{- if (eq $global.provider "capa") }}
+      {{- if (eq .Values.global.provider "capa") }}
       serviceAccountTemplate:
         metadata:
           annotations:
-            {{ toYaml $cluster.serviceAccount.annotations | nindent 8}}
+            {{ toYaml .Values.pgCluster.serviceAccount.annotations | nindent 8}}
       {{- end }}
   test-script.sh: |
     #!/bin/sh
 
     # Make sure that a posgresql cluster with the same name is not already running
-    if kubectl get cluster.postgresql.cnpg.io {{ $cluster.name }} -n {{ $cluster.namespace }}; then
-      echo "A cluster with the name {{ $cluster.name }} already exists in namespace {{ $cluster.namespace }}. Please delete it before running the recovery test."
+    if kubectl get cluster.postgresql.cnpg.io {{ .Values.pgCluster.name }} -n {{ .Values.pgCluster.namespace }}; then
+      echo "A cluster with the name {{ .Values.pgCluster.name }} already exists in namespace {{ .Values.pgCluster.namespace }}. Please delete it before running the recovery test."
       
       exit 1
     fi
@@ -75,30 +70,29 @@ data:
     # Wait for the cluster to be ready
     sleep 600
 
-    echo "Running recovery test for cluster {{ $cluster.name }}"
+    echo "Running recovery test for cluster {{ .Values.pgCluster.name }}"
 
     # Execute tests until either those are successful or the timeout is reached
     while [ $SECONDS -lt $TEST_TIMEOUT ]; do
       # Check if the cluster is ready
-      if [[ "${kubectl get clusters.postgresql.cnpg.io -n {{ $cluster.namespace }} {{ $cluster.name }} -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'}" == "True"]]; then
-        echo "{{ $cluster.name }} successfully entered the 'Ready' state"
+      if [[ "${kubectl get clusters.postgresql.cnpg.io -n {{ .Values.pgCluster.namespace }} {{ .Values.pgCluster.name }} -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'}" == "True"]]; then
+        echo "{{ .Values.pgCluster.name }} successfully entered the 'Ready' state"
 
         # If the postgresql cluster is ready, check if all the generated pods are in 'Ready' state
-        if [[ "${kubectl get pods -n {{ $cluster.namespace }} -l cnpg.io/cluster={{ $cluster.name }} -o jsonpath='{.items[*].status.conditions[?(@.type=="Ready")].status}' | grep True | wc -w}" -eq $cluster.instances ]]; then
-          echo "All pods for cluster {{ $cluster.name }} are in 'Ready' state. Recovery test successful."
-          echo "Deleteting the recovery test cluster {{ $cluster.name }}"
+        if [[ "${kubectl get pods -n {{ .Values.pgCluster.namespace }} -l cnpg.io/cluster={{ .Values.pgCluster.name }} -o jsonpath='{.items[*].status.conditions[?(@.type=="Ready")].status}' | grep True | wc -w}" -eq .Values.pgCluster.instances ]]; then
+          echo "All pods for cluster {{ .Values.pgCluster.name }} are in 'Ready' state. Recovery test successful."
+          echo "Deleteting the recovery test cluster {{ .Values.pgCluster.name }}"
 
           # If the postgresql cluster's pods are ready, delete the cluster and end the test
-          kubectl delete cluster.postgresql.cnpg.io {{ $cluster.name }} -n {{ $cluster.namespace }}
+          kubectl delete cluster.postgresql.cnpg.io {{ .Values.pgCluster.name }} -n {{ .Values.pgCluster.namespace }}
 
           exit 0
         fi
       fi
       
-      echo "Waiting for cluster {{ $cluster.name }} to be ready since $SECONDS seconds..."
+      echo "Waiting for cluster {{ .Values.pgCluster.name }} to be ready since $SECONDS seconds..."
       sleep 300
     done
 
     # If the timeout is reached, end the test without deleting the cluster to allow further investigation
     echo "Recovery test completed"
-{{- end }}

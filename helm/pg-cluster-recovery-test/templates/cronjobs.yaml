@@ -1,21 +1,17 @@
-{{- $global := .Values }}
-{{- range $cluster := .Values.pgClusters.clusters }}
-{{- with $global }}
----
 apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
     {{ include "labels.common" $ | nindent 4 }}
-  name: {{ $cluster.name }}
-  namespace: {{ $cluster.namespace }}
+  name: {{ .Values.pgCluster.name }}
+  namespace: {{ .Values.pgCluster.namespace }}
 spec:
   jobTemplate:
     metadata:
       labels:
         {{ include "labels.common" $ | nindent 8 }}
     spec:
-      backoffLimit: {{ $global.cronjob.backoffLimit }}
+      backoffLimit: {{ .Values.cronjob.backoffLimit }}
       template:
         metadata:
           labels:
@@ -24,29 +20,27 @@ spec:
           containers:
           - command:
             - /etc/config/test-script.sh
-            image: "{{ $global.registry }}/{{ $global.cronjob.image.name }}:{{ $global.cronjob.image.tag }}"
+            image: "{{ .Values.global.registry }}/{{ .Values.cronjob.image.name }}:{{ .Values.cronjob.image.tag }}"
             imagePullPolicy: IfNotPresent"
-            name: {{ $global.cronjob.name }}
+            name: "pg-cluster-recovery-test"
             env:
             - name: TEST_TIMEOUT
-              value: {{ $cluster.testTimeout }}
+              value: {{ $.Values.cronjob.testTimeout }}
             resources:
-              {{- toYaml $global.cronjob.resources | nindent 14 }}
+              {{- toYaml .Values.cronjob.resources | nindent 14 }}
             securityContext:
-              {{- toYaml $global.cronjob.containerSecurityContext | nindent 14 }}
+              {{- toYaml .Values.cronjob.containerSecurityContext | nindent 14 }}
             volumeMounts:
             - name: pg-cluster-recovery-template
               mountPath: /etc/config
           dnsPolicy: ClusterFirst
           restartPolicy: OnFailure
           securityContext:
-            {{- toYaml $global.cronjob.podSecurityContext | nindent 12 }}
-          serviceAccountName: {{ $global.cronjob.serviceAccount.name }}
+            {{- toYaml .Values.cronjob.podSecurityContext | nindent 12 }}
+          serviceAccountName: {{ .Values.cronjob.serviceAccount.name }}
           volumes:
           - name: pg-cluster-recovery-template
             configMap:
-              name: {{ $cluster.name }}
+              name: {{ .Values.pgCluster.name }}
   terminationGracePeriodSeconds: 30
-  schedule: {{ $cluster.schedule }}
-{{- end }}
-{{- end }}
+  schedule: {{ .Values.cronjob.schedule }}

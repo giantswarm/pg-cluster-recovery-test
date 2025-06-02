@@ -8,6 +8,9 @@ cronjob:
     name: giantswarm/kubectl
     tag: 1.31.1
   
+  schedule: "0 10 * * *" # Every day at 10:00 UTC
+  testTimeout: 1800 # 30 minutes
+  
   backoffLimit: 3
 
   serviceAccount:
@@ -31,32 +34,25 @@ cronjob:
     fsGroup: 1000
     runAsUser: 1000
 
-pgClusters:
+pgCluster:
   image:
     name: giantswarm/postgresql-cnpg
     tag: 16.8
   
-  # List of pg clusters to deploy
-  clusters:
-  - name: ""
-    namespace: ""
+  name: ""
+  namespace: ""
 
-    storageSize: 2Gi
-    instances: 1
+  storageSize: 2Gi
+  instances: 1
 
-    # cronjob related config
-    schedule: "0 10 * * *" # Every day at 10:00 UTC
-    testTimeout: 1800 # 30 minutes
+  backupCluster:
+    name: ""
+    destinationPath: ""
+    # Only for pg clusters running on clusters with Azure object storage
+    azureSecret:
+      secretName: ""
+      name: accountName
+      key: accountKey
 
-    backupCluster:
-      name: ""
-      destinationPath: ""
-      # Only for pg clusters running on clusters with Azure object storage
-      azureSecret:
-        secretName: ""
-        name: accountName
-        key: accountKey
-
-    serviceAccount:
-      annotations: {}
-  
+  serviceAccount:
+    annotations: {}
