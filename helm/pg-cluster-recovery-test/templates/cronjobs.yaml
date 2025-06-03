@@ -2,20 +2,20 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
-    {{ include "labels.common" $ | nindent 4 }}
+    {{ include "labels.common" . | nindent 4 }}
   name: {{ .Values.pgCluster.name }}
   namespace: {{ .Values.pgCluster.namespace }}
 spec:
   jobTemplate:
     metadata:
       labels:
-        {{ include "labels.common" $ | nindent 8 }}
+        {{ include "labels.common" . | nindent 8 }}
     spec:
       backoffLimit: {{ .Values.cronjob.backoffLimit }}
       template:
         metadata:
           labels:
-            {{ include "labels.common" $ | nindent 12 }}
+            {{ include "labels.common" . | nindent 12 }}
         spec:
           containers:
           - command:
@@ -25,7 +25,9 @@ spec:
             name: "pg-cluster-recovery-test"
             env:
             - name: TEST_TIMEOUT
-              value: {{ $.Values.cronjob.testTimeout }}
+              value: {{ .Values.cronjob.testTimeout }}
+            - name: WAIT_TIMEOUT
+              value: {{ .Values.cronjob.waitTimeout }}
             resources:
               {{- toYaml .Values.cronjob.resources | nindent 14 }}
             securityContext:
@@ -42,5 +44,6 @@ spec:
           - name: pg-cluster-recovery-template
             configMap:
               name: {{ .Values.pgCluster.name }}
+              defaultMode: {{ .Values.cronjob.configMap.defaultMode }}
   terminationGracePeriodSeconds: 30
   schedule: {{ .Values.cronjob.schedule }}

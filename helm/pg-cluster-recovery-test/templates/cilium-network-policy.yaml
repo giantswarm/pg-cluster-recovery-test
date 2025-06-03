@@ -1,0 +1,28 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  labels:
+    {{ include "labels.common" . | nindent 4 }}
+  name: {{ .Values.pgCluster.name }}
+  namespace: {{ .Values.pgCluster.namespace }}
+spec:
+  egress:
+  - toEndpoints:
+    - matchLabels:
+        cnpg.io/cluster: {{ .Values.pgCluster.name }}
+    toPorts:
+    - ports:
+      - port: "5432"
+  - toEntities:
+    - world
+    - kube-apiserver
+  endpointSelector:
+    matchLabels:
+      cnpg.io/cluster: {{ .Values.pgCluster.name }}
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        cnpg.io/cluster: {{ .Values.pgCluster.name }}
+    toPorts:
+    - ports:
+      - port: "5432"

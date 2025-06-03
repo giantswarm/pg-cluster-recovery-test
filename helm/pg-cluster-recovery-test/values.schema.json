@@ -8,6 +8,14 @@
                 "backoffLimit": {
                     "type": "integer"
                 },
+                "configMap": {
+                    "type": "object",
+                    "properties": {
+                        "defaultMode": {
+                            "type": "integer"
+                        }
+                    }
+                },
                 "containerSecurityContext": {
                     "type": "object",
                     "properties": {
@@ -84,6 +92,9 @@
                     }
                 },
                 "testTimeout": {
+                    "type": "integer"
+                },
+                "waitTimeout": {
                     "type": "integer"
                 }
             }

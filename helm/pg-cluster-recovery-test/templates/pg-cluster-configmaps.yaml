@@ -52,47 +52,64 @@ data:
       serviceAccountTemplate:
         metadata:
           annotations:
-            {{ toYaml .Values.pgCluster.serviceAccount.annotations | nindent 8}}
+            {{ toYaml .Values.pgCluster.serviceAccount.annotations | nindent 8 }}
       {{- end }}
   test-script.sh: |
     #!/bin/sh
 
+    CLUSTER_NAME="{{ .Values.pgCluster.name }}"
+    NAMESPACE="{{ .Values.pgCluster.namespace }}"
+    EXPECTED_POD_COUNT={{ .Values.pgCluster.instances }} # Define expected pod count
+
     # Make sure that a posgresql cluster with the same name is not already running
-    if kubectl get cluster.postgresql.cnpg.io {{ .Values.pgCluster.name }} -n {{ .Values.pgCluster.namespace }}; then
-      echo "A cluster with the name {{ .Values.pgCluster.name }} already exists in namespace {{ .Values.pgCluster.namespace }}. Please delete it before running the recovery test."
-      
+    if kubectl get clusters.postgresql.cnpg.io "${CLUSTER_NAME}" -n "${NAMESPACE}" > /dev/null 2>&1; then
+      echo "A cluster with the name ${CLUSTER_NAME} already exists in namespace ${NAMESPACE}. Please delete it before running the recovery test."
       exit 1
     fi
-    
+
     # create the recovery test cluster
-    kubectl apply -f /etc/config/pg-recovery-cluster.yaml
+    echo "Creating cluster ${CLUSTER_NAME} in namespace ${NAMESPACE}..."
+    if ! kubectl apply -f /etc/config/pg-recovery-cluster.yaml; then
+      echo "Failed to apply cluster manifest for ${CLUSTER_NAME}. Exiting."
+      exit 1
+    fi
 
-    # Wait for the cluster to be ready
-    sleep 600
+    # Wait for the cluster to be created and report its status
+    echo "Waiting for cluster ${CLUSTER_NAME} in namespace ${NAMESPACE} to be ready..."
+    if ! kubectl wait --for=condition=Ready clusters.postgresql.cnpg.io/"${CLUSTER_NAME}" -n "${NAMESPACE}" --timeout="${WAIT_TIMEOUT}"; then
+      echo "Cluster ${CLUSTER_NAME} did not become ready in 600 seconds."
+      echo "Investigate the cluster state. The script will not delete it."
+      exit 1 # Exit if cluster doesn't become ready
+    fi
+    echo "Cluster ${CLUSTER_NAME} is Ready."
 
-    echo "Running recovery test for cluster {{ .Values.pgCluster.name }}"
+    echo "Running recovery test for cluster ${CLUSTER_NAME}"
 
     # Execute tests until either those are successful or the timeout is reached
-    while [ $SECONDS -lt $TEST_TIMEOUT ]; do
-      # Check if the cluster is ready
-      if [[ "${kubectl get clusters.postgresql.cnpg.io -n {{ .Values.pgCluster.namespace }} {{ .Values.pgCluster.name }} -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'}" == "True"]]; then
-        echo "{{ .Values.pgCluster.name }} successfully entered the 'Ready' state"
+    while [ $SECONDS -lt "$TEST_TIMEOUT" ]; do
+      # Check if the postgresql cluster's pods are in 'Ready' state
+      ready_pods_count=$(kubectl get pods -n "${NAMESPACE}" -l cnpg.io/cluster=${CLUSTER_NAME} -o jsonpath='{range .items[*]}{.status.conditions[?(@.type=="Ready")].status}{"\n"}{end}' | grep -c True || true)
+      # The '|| true' ensures that if grep finds nothing (exit code 1), the script doesn't exit due to set -e (if it were set)
 
-        # If the postgresql cluster is ready, check if all the generated pods are in 'Ready' state
-        if [[ "${kubectl get pods -n {{ .Values.pgCluster.namespace }} -l cnpg.io/cluster={{ .Values.pgCluster.name }} -o jsonpath='{.items[*].status.conditions[?(@.type=="Ready")].status}' | grep True | wc -w}" -eq .Values.pgCluster.instances ]]; then
-          echo "All pods for cluster {{ .Values.pgCluster.name }} are in 'Ready' state. Recovery test successful."
-          echo "Deleteting the recovery test cluster {{ .Values.pgCluster.name }}"
+      if [[ "${ready_pods_count}" -eq "${EXPECTED_POD_COUNT}" ]]; then
+        echo "All ${EXPECTED_POD_COUNT} pods for cluster ${CLUSTER_NAME} are in 'Ready' state. Recovery test successful."
+        echo "Deleting the recovery test cluster ${CLUSTER_NAME}"
 
-          # If the postgresql cluster's pods are ready, delete the cluster and end the test
-          kubectl delete cluster.postgresql.cnpg.io {{ .Values.pgCluster.name }} -n {{ .Values.pgCluster.namespace }}
-
-          exit 0
+        # If the postgresql cluster's pods are ready, delete the cluster and end the test
+        if ! kubectl delete clusters.postgresql.cnpg.io "${CLUSTER_NAME}" -n "${NAMESPACE}"; then
+          echo "Failed to delete cluster ${CLUSTER_NAME}. Please delete it manually."
+          exit 1 # Exit with error if deletion fails
         fi
+        echo "Cluster ${CLUSTER_NAME} deleted successfully."
+        exit 0
+      else
+        echo "Found ${ready_pods_count} ready pods out of ${EXPECTED_POD_COUNT} for cluster ${CLUSTER_NAME}. Waiting... ($SECONDS seconds elapsed)"
       fi
       
-      echo "Waiting for cluster {{ .Values.pgCluster.name }} to be ready since $SECONDS seconds..."
-      sleep 300
+      sleep 60 # Check more frequently
     done
 
     # If the timeout is reached, end the test without deleting the cluster to allow further investigation
-    echo "Recovery test completed"
+    echo "Timeout reached after $TEST_TIMEOUT seconds. Found ${ready_pods_count} ready pods out of ${EXPECTED_POD_COUNT}."
+    echo "Recovery test for ${CLUSTER_NAME} FAILED. The cluster will not be deleted to allow further investigation."
+    exit 1 # Explicitly exit with an error code on timeout

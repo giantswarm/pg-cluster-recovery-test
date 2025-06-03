@@ -9,9 +9,13 @@ cronjob:
     tag: 1.31.1
   
   schedule: "0 10 * * *" # Every day at 10:00 UTC
-  testTimeout: 1800 # 30 minutes
+  testTimeout: 1800 # 30 minutes. Time for the test to wait for the cluster's pods to be ready
+  waitTimeout: 600 # 10 minutes. Time for the test to wait for the cluster to be ready
   
   backoffLimit: 3
+
+  configMap:
+    defaultMode: 0550 # permissions for the configmap volume containing the test script and the pg cluster recovery template
 
   serviceAccount:
     create: true
