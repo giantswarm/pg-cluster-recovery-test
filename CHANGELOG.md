@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2025-06-04
+
 ## [0.1.0] - 2025-06-03
 
 - Repo creation and configuration.
 
-[Unreleased]: https://github.com/giantswarm/pg-cluster-recovery-test/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/giantswarm/pg-cluster-recovery-test/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/giantswarm/pg-cluster-recovery-test/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/giantswarm/pg-cluster-recovery-test/releases/tag/v0.1.0
