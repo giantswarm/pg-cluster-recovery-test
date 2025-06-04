@@ -47,8 +47,8 @@ pgCluster:
     name: giantswarm/postgresql-cnpg
     tag: 16.8
 
-  name: ""
-  namespace: ""
+  name: "pg-cluster-recovery-test"
+  namespace: "recovey-test"
 
   storageSize: 2Gi
   instances: 1
