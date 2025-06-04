@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.1] - 2025-06-04
 
+- Trigger circleci job for pushing chart to app catalaog.
+
 ## [0.1.0] - 2025-06-03
 
 - Repo creation and configuration.
