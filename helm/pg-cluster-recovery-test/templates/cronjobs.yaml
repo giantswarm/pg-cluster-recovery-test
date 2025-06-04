@@ -21,7 +21,7 @@ spec:
           - command:
             - /etc/config/test-script.sh
             image: "{{ .Values.global.registry }}/{{ .Values.cronjob.image.name }}:{{ .Values.cronjob.image.tag }}"
-            imagePullPolicy: IfNotPresent"
+            imagePullPolicy: {{ .Values.cronjob.image.pullPolicy }}
             name: "pg-cluster-recovery-test"
             env:
             - name: TEST_TIMEOUT
