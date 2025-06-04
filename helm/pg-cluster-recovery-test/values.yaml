@@ -13,7 +13,7 @@ cronjob:
   # 30 minutes. Time for the test to wait for the cluster's pods to be ready
   testTimeout: 1800
   # 10 minutes. Time for the test to wait for the cluster to be ready
-  waitTimeout: 600
+  waitTimeout: 600s
 
   backoffLimit: 3
 

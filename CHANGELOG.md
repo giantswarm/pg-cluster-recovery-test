@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Fixed issues preventing chart to be deployed as a subchart in other charts.
+
 ## [0.1.1] - 2025-06-04
 
 ### Changed
