@@ -95,7 +95,7 @@
                     "type": "integer"
                 },
                 "waitTimeout": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },
