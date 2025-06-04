@@ -58,6 +58,9 @@
                         "name": {
                             "type": "string"
                         },
+                        "pullPolicy": {
+                            "type": "string"
+                        },
                         "tag": {
                             "type": "string"
                         }

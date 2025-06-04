@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Move `imagePullPolicy` field from cronjob template to values.
+
 ## [0.1.2] - 2025-06-04
 
 ### Changed
