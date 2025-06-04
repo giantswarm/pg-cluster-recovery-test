@@ -5,6 +5,7 @@ name: pg-cluster-recovery-test
 # Please describe what the app provides in a sentence or two.
 description: Please add description
 home: https://github.com/giantswarm/pg-cluster-recovery-test
+icon: https://s.giantswarm.io/app-icons/cloudnative-pg/icon-light.svg
 # If you have an icon/logo, you should add it to https://github.com/giantswarm/web-assets
 # and set the final URL as a value here and uncomment.
 #icon: https://s.giantswarm.io/app-icons/example/1/light.svg
