@@ -9,7 +9,7 @@ data:
     kind: Cluster
     metadata:
       labels:
-        {{ tpl (include "labels.common" $) . | nindent 8 }}
+        {{- tpl (include "labels.common" $) . | nindent 8 }}
       name: {{ .Values.pgCluster.name }}
       namespace: {{ .Values.pgCluster.namespace }}
     spec:
@@ -52,7 +52,7 @@ data:
       serviceAccountTemplate:
         metadata:
           annotations:
-            {{ toYaml .Values.pgCluster.serviceAccount.annotations | nindent 8 }}
+            {{- toYaml .Values.pgCluster.serviceAccount.annotations | nindent 12 }}
       {{- end }}
   test-script.sh: |
     #!/bin/bash
