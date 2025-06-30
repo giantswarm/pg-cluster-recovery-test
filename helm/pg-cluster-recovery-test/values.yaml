@@ -46,7 +46,7 @@ cronjob:
 pgCluster:
   image:
     name: giantswarm/postgresql-cnpg
-    tag: 16.8
+    tag: 17.5
 
   name: "pg-cluster-recovery-test"
   namespace: "recovey-test"
