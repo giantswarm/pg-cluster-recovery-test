@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Add `failedJobsHistoryLimit` and `successfulJobsHistoryLimit` in the cronjob.
+
 ## [0.1.5] - 2025-06-30
 
 ### Changed
