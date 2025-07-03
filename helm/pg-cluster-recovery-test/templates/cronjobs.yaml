@@ -47,3 +47,5 @@ spec:
               defaultMode: {{ .Values.cronjob.configMap.defaultMode }}
   terminationGracePeriodSeconds: 30
   schedule: {{ .Values.cronjob.schedule }}
+  failedJobsHistoryLimit: {{ .Values.cronjob.failedJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ .Values.cronjob.successfulJobsHistoryLimit }}

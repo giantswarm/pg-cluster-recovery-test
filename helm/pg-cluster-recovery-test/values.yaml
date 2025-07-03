@@ -17,6 +17,8 @@ cronjob:
   waitTimeout: 600s
 
   backoffLimit: 3
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
 
   configMap:
     # Permissions for the configmap volume containing the test script and the pg cluster recovery template
