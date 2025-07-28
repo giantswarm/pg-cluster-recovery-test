@@ -101,6 +101,13 @@ data:
           exit 1 # Exit with error if deletion fails
         fi
         echo "Cluster ${CLUSTER_NAME} deleted successfully."
+
+        echo "Deleting persistent volume claims for the ${CLUSTER_NAME} cluster"
+        if ! kubectl delete pvc -l cnpg.io/cluster="${CLUSTER_NAME}" -n "${NAMESPACE}"; then
+          echo "Failed to delete pvc for the ${CLUSTER_NAME} cluster. Please delete it manually."
+          exit 1 # Exit with error if deletion fails
+        fi
+        echo "Persistent volume claims for the ${CLUSTER_NAME} cluster deleted successfully."
         exit 0
       else
         echo "Found ${ready_pods_count} ready pods out of ${EXPECTED_POD_COUNT} for cluster ${CLUSTER_NAME}. Waiting... ($SECONDS seconds elapsed)"
