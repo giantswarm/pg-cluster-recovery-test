@@ -26,6 +26,15 @@ rules:
   - watch
   - list
 - apiGroups:
+  - ""
+  resources:
+  - persitentvolumeclaims
+  verbs:
+  - get
+  - watch
+  - list
+  - delete
+- apiGroups:
   - postgresql.cnpg.io
   resources:
   - clusters
