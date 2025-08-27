@@ -36,7 +36,7 @@ spec:
             - name: pg-cluster-recovery-template
               mountPath: /etc/config
           dnsPolicy: ClusterFirst
-          restartPolicy: OnFailure
+          restartPolicy: Never
           securityContext:
             {{- toYaml .Values.cronjob.podSecurityContext | nindent 12 }}
           serviceAccountName: {{ .Values.cronjob.serviceAccount.name }}
