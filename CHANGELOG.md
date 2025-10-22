@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix type for cluster recovery on azure.
+
 ## [0.2.3] - 2025-08-27
 
 ### Changed
