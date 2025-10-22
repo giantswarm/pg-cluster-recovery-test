@@ -43,7 +43,7 @@ data:
               name: {{ .Values.pgCluster.backupCluster.azureSecret.secretName }}
               key: {{ .Values.pgCluster.backupCluster.azureSecret.name }}
             storageKey:
-              name: {{ .Values.pgCluster.backupCluster.azureSecret.name }}
+              name: {{ .Values.pgCluster.backupCluster.azureSecret.secretName }}
               key: {{ .Values.pgCluster.backupCluster.azureSecret.key }}
           {{- end }}
           wal:
