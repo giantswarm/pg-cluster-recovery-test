@@ -9,9 +9,13 @@ Here, we define the pg-cluster-recovery-test chart with its templates and defaul
 
 **What is this app?**
 
-**Why did we add it?**
+This app tests [CloudNativePG](https://github.com/giantswarm/cloudnative-pg-app/) database backups.
 
-**Who can use it?**
+It relies on a `CronJob` that runs a [test-script](https://github.com/giantswarm/pg-cluster-recovery-test/blob/main/helm/pg-cluster-recovery-test/templates/pg-cluster-configmaps.yaml).
+
+This test script will create a new CNPG cluster, bootstrap it from some backups, and check that the creation was successful.
+
+This helps validate that backups are working.
 
 ## Installing
 
@@ -19,6 +23,7 @@ There are several ways to install this app onto a workload cluster.
 
 - [Using GitOps to instantiate the App](https://docs.giantswarm.io/tutorials/continuous-deployment/apps/add-appcr/)
 - By creating an [App resource](https://docs.giantswarm.io/reference/platform-api/crd/apps.application.giantswarm.io) using the platform API as explained in [Getting started with App Platform](https://docs.giantswarm.io/tutorials/fleet-management/app-platform/).
+- Or as a dependency of another helm chart, like we did in [grafana-app's helm chart](https://github.com/giantswarm/grafana-app/blob/main/helm/grafana/Chart.yaml).
 
 ## Configuring
 
