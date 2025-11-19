@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update recovery test cluster template so that it uses CNPG-I.
+
 ## [0.2.4] - 2025-10-22
 
 ### Fixed
