@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2025-11-19
+
 ### Changed
 
 - Update recovery test cluster template so that it uses CNPG-I.
@@ -81,7 +83,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Repo creation and configuration.
 
-[Unreleased]: https://github.com/giantswarm/pg-cluster-recovery-test/compare/v0.2.4...HEAD
+[Unreleased]: https://github.com/giantswarm/pg-cluster-recovery-test/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/giantswarm/pg-cluster-recovery-test/compare/v0.2.4...v0.3.0
 [0.2.4]: https://github.com/giantswarm/pg-cluster-recovery-test/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/giantswarm/pg-cluster-recovery-test/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/giantswarm/pg-cluster-recovery-test/compare/v0.2.1...v0.2.2
