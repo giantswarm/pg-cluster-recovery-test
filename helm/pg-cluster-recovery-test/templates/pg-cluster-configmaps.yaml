@@ -30,24 +30,11 @@ data:
           source: {{ .Values.pgCluster.backupCluster.name }}
       externalClusters:
       - name: {{ .Values.pgCluster.backupCluster.name }}
-        barmanObjectStore:
-          {{- if (eq .Values.global.provider "capa") }}
-          destinationPath: {{ .Values.pgCluster.backupCluster.destinationPath }}
-          s3Credentials:
-            inheritFromIAMRole: true
-          {{- end }}
-          {{- if or (eq .Values.global.provider "capz") (and (eq .Values.global.customer "giantswarm") (or (eq .Values.global.provider "vsphere") (eq .Values.global.provider "cloud-director"))) }}
-          destinationPath: {{ .Values.pgCluster.backupCluster.destinationPath }}
-          azureCredentials:
-            storageAccount:
-              name: {{ .Values.pgCluster.backupCluster.azureSecret.secretName }}
-              key: {{ .Values.pgCluster.backupCluster.azureSecret.name }}
-            storageKey:
-              name: {{ .Values.pgCluster.backupCluster.azureSecret.secretName }}
-              key: {{ .Values.pgCluster.backupCluster.azureSecret.key }}
-          {{- end }}
-          wal:
-            maxParallel: 8
+        plugin:
+          name: barman-cloud.cloudnative-pg.io
+          parameters:
+            barmanObjectName: grafana-postgresql-objectstore-backup
+            serverName: {{ .Values.pgCluster.backupCluster.name }}
       {{- if (eq .Values.global.provider "capa") }}
       serviceAccountTemplate:
         metadata:
