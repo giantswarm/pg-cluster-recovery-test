@@ -8,4 +8,4 @@ sources:
   - https://github.com/some-org/some-repo
 version: 0.3.0
 annotations:
-  application.giantswarm.io/team: atlas
+  io.giantswarm.application.team: atlas
