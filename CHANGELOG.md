@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Extract files embeded in the configmap into separate files in the `files` directory.
 - Clean up unused recovery properties as backups rely on Cluster and ObjectStore CRs.
+- Use unique postgres cluster name to avoid conflicts with existing clusters when running new recovery test.
 
 ## [0.3.1] - 2026-02-12
 
