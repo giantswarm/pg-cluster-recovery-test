@@ -8,8 +8,12 @@ metadata:
 spec:
   egress:
   - toEndpoints:
-    - matchLabels:
-        cnpg.io/cluster: {{ .Values.pgCluster.name }}
+    - matchExpressions:
+      - key: cnpg.io/cluster
+        operator: Exists
+      - key: cnpg-test
+        operator: In
+        values: ["recovery"]
     toPorts:
     - ports:
       - port: "5432"
@@ -17,12 +21,20 @@ spec:
     - world
     - kube-apiserver
   endpointSelector:
-    matchLabels:
-      cnpg.io/cluster: {{ .Values.pgCluster.name }}
+    matchExpressions:
+    - key: cnpg.io/cluster
+      operator: Exists
+    - key: cnpg-test
+      operator: In
+      values: ["recovery"]
   ingress:
   - fromEndpoints:
-    - matchLabels:
-        cnpg.io/cluster: {{ .Values.pgCluster.name }}
+    - matchExpressions:
+      - key: cnpg.io/cluster
+        operator: Exists
+      - key: cnpg-test
+        operator: In
+        values: ["recovery"]
     toPorts:
     - ports:
       - port: "5432"

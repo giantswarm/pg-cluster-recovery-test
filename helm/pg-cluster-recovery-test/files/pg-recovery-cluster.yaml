@@ -3,6 +3,7 @@ kind: Cluster
 metadata:
   labels:
     {{- tpl (include "labels.common" $) . | nindent 4 }}
+    cnpg-test: recovery
   name: {{ .Values.pgCluster.name }}
   namespace: {{ .Values.pgCluster.namespace }}
 spec:
