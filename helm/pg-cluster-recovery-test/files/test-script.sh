@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CLUSTER_NAME="{{ .Values.pgCluster.name }}"
+CLUSTER_NAME="$HOSTNAME" # Use the pod hostname as the cluster name
 NAMESPACE="{{ .Values.pgCluster.namespace }}"
 EXPECTED_POD_COUNT={{ .Values.pgCluster.instances }} # Define expected pod count
 
@@ -12,7 +12,9 @@ fi
 
 # create the recovery test cluster
 echo "Creating cluster ${CLUSTER_NAME} in namespace ${NAMESPACE}..."
-if ! kubectl apply -f /etc/config/pg-recovery-cluster.yaml; then
+# using kubectl patch in order to set the cluster name dynamically based on the pod hostname, and applying the manifest in one step
+if ! kubectl patch --dry-run=client -f /etc/config/pg-recovery-cluster.yaml --type merge --patch '{"metadata":{"name":"'"$CLUSTER_NAME"'"}}' -oyaml | kubectl apply -f -; then
+
   echo "Failed to apply cluster manifest for ${CLUSTER_NAME}. Exiting."
   exit 1
 fi
