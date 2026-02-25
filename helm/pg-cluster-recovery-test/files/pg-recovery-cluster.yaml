@@ -1,0 +1,36 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  labels:
+    {{- tpl (include "labels.common" $) . | nindent 4 }}
+  name: {{ .Values.pgCluster.name }}
+  namespace: {{ .Values.pgCluster.namespace }}
+spec:
+  instances: {{ .Values.pgCluster.instances }}
+  imageName: {{ .Values.global.registry }}/{{ .Values.pgCluster.image.name }}:{{ .Values.pgCluster.image.tag }}
+  postgresql:
+    parameters:
+      # Maximum size of the WAL
+      max_wal_size: '512MB'
+      # Specifies the minimum size of past WAL files kept in the pg_wal directory
+      wal_keep_size: '128MB'
+      # Specify the maximum size of WAL files that replication slot
+      max_slot_wal_keep_size: '128MB'
+  storage:
+    size: {{ .Values.pgCluster.storageSize }}
+  bootstrap:
+    recovery:
+      source: {{ .Values.pgCluster.backupCluster.name }}
+  externalClusters:
+  - name: {{ .Values.pgCluster.backupCluster.name }}
+    plugin:
+      name: barman-cloud.cloudnative-pg.io
+      parameters:
+        barmanObjectName: grafana-postgresql-objectstore-backup
+        serverName: {{ .Values.pgCluster.backupCluster.name }}
+  {{- if (eq .Values.global.provider "capa") }}
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        {{- toYaml .Values.pgCluster.serviceAccount.annotations | nindent 8 }}
+  {{- end }}
