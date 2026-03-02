@@ -128,23 +128,6 @@
                 "backupCluster": {
                     "type": "object",
                     "properties": {
-                        "azureSecret": {
-                            "type": "object",
-                            "properties": {
-                                "key": {
-                                    "type": "string"
-                                },
-                                "name": {
-                                    "type": "string"
-                                },
-                                "secretName": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "destinationPath": {
-                            "type": "string"
-                        },
                         "name": {
                             "type": "string"
                         }
