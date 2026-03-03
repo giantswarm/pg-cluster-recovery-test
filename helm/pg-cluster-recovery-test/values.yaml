@@ -58,12 +58,6 @@ pgCluster:
 
   backupCluster:
     name: ""
-    destinationPath: ""
-    # Only for pg clusters running on clusters with Azure object storage
-    azureSecret:
-      secretName: ""
-      name: accountName
-      key: accountKey
 
   serviceAccount:
     annotations: {}
