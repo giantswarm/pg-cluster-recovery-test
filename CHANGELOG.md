@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Extract files embeded in the configmap into separate files in the `files` directory.
 - Clean up unused recovery properties as backups rely on Cluster and ObjectStore CRs.
 
 ## [0.3.1] - 2026-02-12
