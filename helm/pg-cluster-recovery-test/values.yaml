@@ -10,13 +10,13 @@ cronjob:
     pullPolicy: IfNotPresent
 
   # Every day at 10:00 UTC
-  schedule: "0 10 * * *"
+  schedule: "0 */6 * * *"
   # 30 minutes. Time for the test to wait for the cluster's pods to be ready
   testTimeout: 1800
   # 10 minutes. Time for the test to wait for the cluster to be ready
   waitTimeout: 600s
 
-  backoffLimit: 3
+  backoffLimit: 0
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
 

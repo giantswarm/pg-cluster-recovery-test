@@ -45,7 +45,7 @@ spec:
             configMap:
               name: {{ .Values.pgCluster.name }}
               defaultMode: {{ .Values.cronjob.configMap.defaultMode }}
-  terminationGracePeriodSeconds: 30
-  schedule: {{ .Values.cronjob.schedule }}
+          terminationGracePeriodSeconds: 30
   failedJobsHistoryLimit: {{ .Values.cronjob.failedJobsHistoryLimit }}
+  schedule: {{ .Values.cronjob.schedule }}
   successfulJobsHistoryLimit: {{ .Values.cronjob.successfulJobsHistoryLimit }}
