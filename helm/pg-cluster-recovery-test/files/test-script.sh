@@ -90,6 +90,7 @@ while [[ "$SECONDS" -lt "$TEST_TIMEOUT" ]]; do
 
   if [[ "${ready_pods_count}" -eq "${EXPECTED_POD_COUNT}" ]]; then
     echo "> All ${EXPECTED_POD_COUNT} Pods for Cluster ${CLUSTER_NAME} are in 'Ready' state. Recovery test successfully PASSED."
+    exit 0
   else
     echo "> Found ${ready_pods_count} ready Pods out of ${EXPECTED_POD_COUNT} for Cluster ${CLUSTER_NAME}. Waiting... ($SECONDS seconds elapsed)"
   fi
