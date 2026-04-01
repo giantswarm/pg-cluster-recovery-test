@@ -11,9 +11,6 @@ spec:
     - matchExpressions:
       - key: cnpg.io/cluster
         operator: Exists
-      - key: cnpg-test
-        operator: In
-        values: ["recovery"]
     toPorts:
     - ports:
       - port: "5432"
@@ -24,17 +21,11 @@ spec:
     matchExpressions:
     - key: cnpg.io/cluster
       operator: Exists
-    - key: cnpg-test
-      operator: In
-      values: ["recovery"]
   ingress:
   - fromEndpoints:
     - matchExpressions:
       - key: cnpg.io/cluster
         operator: Exists
-      - key: cnpg-test
-        operator: In
-        values: ["recovery"]
     toPorts:
     - ports:
       - port: "5432"
