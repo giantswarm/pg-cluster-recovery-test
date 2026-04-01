@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix CiliumNetworkPolicy to match CNPG restore job pods. The previous selector required `cnpg-test=recovery` in addition to `cnpg.io/cluster`, but CNPG-created restore job pods only carry `cnpg.io/cluster`. This caused restore pods to be blocked from reaching the Kubernetes API server, breaking recovery tests.
+
 ## [0.4.0] - 2026-03-26
 
 ### Changed
