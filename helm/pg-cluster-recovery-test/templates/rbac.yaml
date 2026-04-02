@@ -27,6 +27,12 @@ rules:
   - watch
   - list
 - apiGroups:
+  - "batch"
+  resources:
+  - jobs
+  verbs:
+  - get
+- apiGroups:
   - ""
   resources:
   - persistentvolumeclaims
