@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix values comment for `.cronjob.schedule`
 - Fix missing rbac permission to read jobs definition for debug logs
+- Fixed a typo in tests namespace
 
 ## [0.4.1] - 2026-04-01
 
