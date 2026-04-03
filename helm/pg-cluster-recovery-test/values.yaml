@@ -51,7 +51,7 @@ pgCluster:
     tag: 17.5
 
   name: "pg-cluster-recovery-test"
-  namespace: "recovey-test"
+  namespace: "recovery-test"
 
   storageSize: 2Gi
   instances: 1
